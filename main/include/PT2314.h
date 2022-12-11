@@ -62,6 +62,7 @@ public:
     void update();
 
     void save();
+    void load();
 
     void setVolume(uint8_t volume) const {
         if(volume > PT2314_MAX_VOLUME)

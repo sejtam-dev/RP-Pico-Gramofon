@@ -28,10 +28,7 @@ void PT2314::init() {
     gpio_pull_up(sda);
 
     if(Memory::read<bool>(PT2314_MEMORY_OFFSET)) {
-        auto* readedData = Memory::read<PT2314_Data>(0);
-
-        data = static_cast<PT2314_Data*>(malloc(sizeof(PT2314_Data)));
-        memcpy(data, readedData, sizeof(PT2314_Data));
+        load();
     } else {
         save();
     }
@@ -67,4 +64,11 @@ void PT2314::sendCommand(uint8_t command) {
 
 void PT2314::save() {
     Memory::write(PT2314_MEMORY_OFFSET, data, sizeof(PT2314_Data));
+}
+
+void PT2314::load() {
+    auto* readedData = Memory::read<PT2314_Data>(0);
+
+    data = static_cast<PT2314_Data*>(malloc(sizeof(PT2314_Data)));
+    memcpy(data, readedData, sizeof(PT2314_Data));
 }
