@@ -467,3 +467,5 @@ build/
 generated/
 elf2uf2/
 /pico-sdk/
+
+cmake-build-*/
