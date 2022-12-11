@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.20)
 
 ###### Change this attributs
 
-set(PROJECT_NAME PROJECT_EXAMPLE)
+set(PROJECT_NAME Gramofon)
 
 ######
 
