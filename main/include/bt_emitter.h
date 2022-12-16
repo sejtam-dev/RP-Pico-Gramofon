@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 11.12.2022.
-//
-
 #ifndef GRAMOFON_BT_EMITTER_H
 #define GRAMOFON_BT_EMITTER_H
 

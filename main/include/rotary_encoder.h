@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 10.12.2022.
-//
-
 #ifndef GRAMOFON_ROTARY_ENCODER_H
 #define GRAMOFON_ROTARY_ENCODER_H
 

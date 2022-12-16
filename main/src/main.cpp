@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 10.12.2022.
-//
-
 #include "pico.h"
 #include "pico/types.h"
 #include "pico/stdio.h"
@@ -13,6 +9,10 @@
 #include "rotary_encoder.h"
 #include "PT2314.h"
 #include "bt_emitter.h"
+#include "SH1106.h"
+
+#include "fonts/5x8_font.h"
+#include "fonts/12x16_font.h"
 
 #define DISPLAY_I2C i2c1
 #define DISPLAY_SDA 2
@@ -38,14 +38,15 @@ int main() {
     PT2314 amplifier(AMPLIFIER_I2C, AMPLIFIER_SCL, AMPLIFIER_SDA, AMPLIFIER_ADDRESS);
     RotaryEncoder encoder(ENCODER_PIN1, ENCODER_PIN2, ENCODER_BUTTON, RotaryEncoder::LatchMode::FOUR3);
     BT_Emitter btEmitter(BLUETOOTH_UART, BLUETOOTH_TX, BLUETOOTH_RX);
+    SH1106 display(DISPLAY_I2C, DISPLAY_SCL, DISPLAY_SDA, DISPLAY_ADDRESS);
 
     sleep_ms(2000);
     std::cout << "Init" << std::endl;
 
     amplifier.init();
     encoder.init();
-    btEmitter.init();
 
+    btEmitter.init();
     std::cout << "Bluetooth: " << btEmitter.isReady() << std::endl;
 
     std::vector<BT_Device> search = btEmitter.search();
@@ -56,6 +57,12 @@ int main() {
 
         //btEmitter.connect(search[0]);
     }
+
+    display.init();
+    display.setOrientation(true);
+    display.clear();
+    display.drawText(font_12x16, "Volume: 0", 0, 0);
+    display.sendBuffer();
 
     while(true) {
         encoder.tick();
@@ -71,6 +78,15 @@ int main() {
 
             amplifier.setVolume(volume);
             amplifier.update();
+
+
+            display.clear();
+
+            std::string text = "Volume: " + std::to_string(volume);
+            display.drawText(font_12x16, text.c_str(), 0, 0);
+
+            display.sendBuffer();
+
 
             std::cout << "Volume: " << unsigned(volume) << std::endl;
         }

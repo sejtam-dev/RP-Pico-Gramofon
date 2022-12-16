@@ -1,6 +1,3 @@
-//
-// Created by Tomáš Novák on 11.12.2022.
-//
 #include "PT2314.h"
 
 #include "math.hpp"

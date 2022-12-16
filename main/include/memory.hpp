@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 10.12.2022.
-//
-
 #ifndef GRAMOFON_MEMORY_HPP
 #define GRAMOFON_MEMORY_HPP
 

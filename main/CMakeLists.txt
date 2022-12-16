@@ -8,7 +8,7 @@ message("= Root Directory: ${MAIN_ROOT_DIR}")
 message("=")
 
 set(MAIN_INCLUDES_DIR ${MAIN_ROOT_DIR}/include)
-file(GLOB MAIN_INCLUDES "${MAIN_INCLUDES_DIR}/*.h" "${MAIN_INCLUDES_DIR}/*.hpp")
+file(GLOB MAIN_INCLUDES "${MAIN_INCLUDES_DIR}/*.h" "${MAIN_INCLUDES_DIR}/*.hpp" "${MAIN_INCLUDES_DIR}/fonts/*.h")
 
 message("= Headers Directory: ${MAIN_INCLUDES_DIR}")
 message("= Header Files:")

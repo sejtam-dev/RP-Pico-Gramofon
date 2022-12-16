@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 11.12.2022.
-//
-
 #include <pico/time.h>
 
 #include "hardware/gpio.h"

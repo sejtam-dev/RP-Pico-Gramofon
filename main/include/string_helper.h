@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 11.12.2022.
-//
-
 #ifndef GRAMOFON_STRING_HELPER_H
 #define GRAMOFON_STRING_HELPER_H
 

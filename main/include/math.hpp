@@ -1,7 +1,3 @@
-//
-// Created by Tomáš Novák on 10.12.2022.
-//
-
 #ifndef GRAMOFON_MATH_HPP
 #define GRAMOFON_MATH_HPP
 

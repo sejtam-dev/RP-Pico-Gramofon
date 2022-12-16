@@ -1,6 +1,3 @@
-//
-// Created by Tomáš Novák on 10.12.2022.
-//
 #ifndef GRAMOFON_BUTTON_H
 #define GRAMOFON_BUTTON_H
 
