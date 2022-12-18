@@ -4,13 +4,13 @@
 #include "pico.h"
 #include "pico/types.h"
 
+#include "device.h"
 #include "button.h"
 
 #define LATCH0 0 // input state at position 0
 #define LATCH3 3 // input state at position 3
 
-enum class EncoderDirection
-{
+enum class EncoderDirection {
     NOROTATION = 0,
     CLOCKWISE = 1,
     COUNTERCLOCKWISE = -1
@@ -23,8 +23,7 @@ const int8_t KNOBDIR[] = {
         0, 1, -1, 0
 };
 
-class RotaryEncoder
-{
+class RotaryEncoder : public Device {
 public:
     enum class LatchMode
     {

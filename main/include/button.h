@@ -4,24 +4,23 @@
 #include "pico.h"
 #include "pico/types.h"
 
+#include "device.h"
+
 #define LONG_PRESS_TIME 1000
 
-enum class ButtonState
-{
-    ShortPress, // 0-3 sec
-    LongPress,  // 3-unlimited sec
+enum class ButtonState {
+    ShortPress, // 0-1 sec
+    LongPress,  // 1-unlimited sec
     Holding,
     None		// Not pressed
 };
 
-enum class ButtonType
-{
+enum class ButtonType {
     PullUp,
     PullDown
 };
 
-class Button
-{
+class Button : public Device {
 private:
     uint8_t pin;
     ButtonType type;

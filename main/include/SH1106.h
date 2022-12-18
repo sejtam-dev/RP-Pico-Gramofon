@@ -7,6 +7,7 @@
 #include "hardware/i2c.h"
 
 #include "FrameBuffer.h"
+#include "device.h"
 
 #define SH1106_CONTRAST 0x81
 #define SH1106_DISPLAYALL_ON_RESUME 0xA4
@@ -58,7 +59,7 @@ enum class SH1106_WRITE_MODE : const uint8_t {
     INVERT = 2,
 };
 
-class SH1106 {
+class SH1106 : public Device {
 private:
     i2c_inst* inst;
     uint8_t scl;
@@ -87,9 +88,11 @@ public:
     void drawChar(const uint8_t* font, char c, uint8_t anchor_x, uint8_t anchor_y, SH1106_WRITE_MODE mode = SH1106_WRITE_MODE::ADD);
     void drawText(const uint8_t* font, const char * text, uint8_t anchor_x, uint8_t anchor_y, SH1106_WRITE_MODE mode = SH1106_WRITE_MODE::ADD);
     void drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, SH1106_WRITE_MODE mode = SH1106_WRITE_MODE::ADD);
+    void drawRect(uint8_t x_start, uint8_t y_start, uint8_t x_end, uint8_t y_end, SH1106_WRITE_MODE mode = SH1106_WRITE_MODE::ADD);
 
     void sendBuffer();
     void clear();
+    void clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 
     void setOrientation(bool flipped);
 

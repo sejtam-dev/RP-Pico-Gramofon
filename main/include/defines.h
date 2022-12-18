@@ -1,0 +1,26 @@
+//
+// Created by Tomáš Novák on 17.12.2022.
+//
+
+#ifndef GRAMOFON_DEFINES_H
+#define GRAMOFON_DEFINES_H
+
+#define DISPLAY_I2C i2c1
+#define DISPLAY_SDA 2
+#define DISPLAY_SCL 3
+#define DISPLAY_ADDRESS 0x3C
+
+#define AMPLIFIER_I2C i2c0
+#define AMPLIFIER_SDA 0
+#define AMPLIFIER_SCL 1
+#define AMPLIFIER_ADDRESS 0x44
+
+#define ENCODER_PIN1 8
+#define ENCODER_PIN2 9
+#define ENCODER_BUTTON 7
+
+#define BLUETOOTH_UART uart0
+#define BLUETOOTH_TX 12
+#define BLUETOOTH_RX 13
+
+#endif //GRAMOFON_DEFINES_H

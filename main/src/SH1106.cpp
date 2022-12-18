@@ -185,6 +185,14 @@ void SH1106::clear() {
     frameBuffer.clear();
 }
 
+void SH1106::clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+    for(int x = x0; x < x1; x++) {
+        for(int y = y0; y < y1; y++) {
+            setPixel(x, y, SH1106_WRITE_MODE::SUBTRACT);
+        }
+    }
+}
+
 void SH1106::setOrientation(bool flipped) {
     if (flipped) {
         sendCommand(SH1106_CLUMN_REMAP_OFF);
@@ -320,5 +328,12 @@ void SH1106::drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, SH1106_WRI
             setPixel(x, y, mode);
         }
     }
+}
+
+void SH1106::drawRect(uint8_t x_start, uint8_t y_start, uint8_t x_end, uint8_t y_end, SH1106_WRITE_MODE mode) {
+    drawLine(x_start, y_start, x_end, y_start, mode);
+    drawLine(x_start, y_end, x_end, y_end, mode);
+    drawLine(x_start, y_start, x_start, y_end, mode);
+    drawLine(x_end, y_start, x_end, y_end, mode);
 }
 

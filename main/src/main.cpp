@@ -4,41 +4,34 @@
 
 #include <hardware/i2c.h>
 #include <hardware/uart.h>
+#include <hardware/irq.h>
+#include <hardware/gpio.h>
+
 #include <iostream>
 
+#include "defines.h"
 #include "rotary_encoder.h"
 #include "PT2314.h"
 #include "bt_emitter.h"
 #include "SH1106.h"
 
+#include "menu/menu.h"
+#include "scenes/main_scene.h"
+
 #include "fonts/5x8_font.h"
 #include "fonts/12x16_font.h"
+#include "memory.hpp"
 
-#define DISPLAY_I2C i2c1
-#define DISPLAY_SDA 2
-#define DISPLAY_SCL 3
-#define DISPLAY_ADDRESS 0x3C
+PT2314 amplifier(AMPLIFIER_I2C, AMPLIFIER_SCL, AMPLIFIER_SDA, AMPLIFIER_ADDRESS);
+RotaryEncoder encoder(ENCODER_PIN1, ENCODER_PIN2, ENCODER_BUTTON, RotaryEncoder::LatchMode::FOUR3);
+BT_Emitter btEmitter(BLUETOOTH_UART, BLUETOOTH_TX, BLUETOOTH_RX);
+SH1106 display(DISPLAY_I2C, DISPLAY_SCL, DISPLAY_SDA, DISPLAY_ADDRESS);
+Menu menu(&display);
 
-#define AMPLIFIER_I2C i2c0
-#define AMPLIFIER_SDA 0
-#define AMPLIFIER_SCL 1
-#define AMPLIFIER_ADDRESS 0x44
-
-#define ENCODER_PIN1 8
-#define ENCODER_PIN2 9
-#define ENCODER_BUTTON 7
-
-#define BLUETOOTH_UART uart0
-#define BLUETOOTH_TX 12
-#define BLUETOOTH_RX 13
+void gpio_callback(uint gpio, uint32_t events);
 
 int main() {
     stdio_init_all();
-
-    PT2314 amplifier(AMPLIFIER_I2C, AMPLIFIER_SCL, AMPLIFIER_SDA, AMPLIFIER_ADDRESS);
-    RotaryEncoder encoder(ENCODER_PIN1, ENCODER_PIN2, ENCODER_BUTTON, RotaryEncoder::LatchMode::FOUR3);
-    BT_Emitter btEmitter(BLUETOOTH_UART, BLUETOOTH_TX, BLUETOOTH_RX);
-    SH1106 display(DISPLAY_I2C, DISPLAY_SCL, DISPLAY_SDA, DISPLAY_ADDRESS);
 
     sleep_ms(2000);
     std::cout << "Init" << std::endl;
@@ -47,48 +40,40 @@ int main() {
     encoder.init();
 
     btEmitter.init();
-    std::cout << "Bluetooth: " << btEmitter.isReady() << std::endl;
-
-    std::vector<BT_Device> search = btEmitter.search();
-    if(!search.empty()) {
-        for (BT_Device &device: search) {
-            std::cout << "Device: " << device.name << ", Mac: " << device.macAddress << std::endl;
-        }
-
-        //btEmitter.connect(search[0]);
-    }
+    std::cout << "Bluetooth: " << (btEmitter.isReady() ? "Ready" : "Not Ready") << std::endl;
 
     display.init();
     display.setOrientation(true);
+
     display.clear();
-    display.drawText(font_12x16, "Volume: 0", 0, 0);
+    display.drawText(font_12x16, "Loading...", 0, 26);
     display.sendBuffer();
 
+    sleep_ms(2000);
+    btEmitter.disconnect();
+
+    gpio_set_irq_enabled_with_callback(ENCODER_BUTTON, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, gpio_callback);
+    gpio_set_irq_enabled(ENCODER_PIN1, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(ENCODER_PIN2, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+
+    menu.changeScene(new MainScene());
+
     while(true) {
-        encoder.tick();
-
-        EncoderDirection direction = encoder.getDirection();
-        if(direction != EncoderDirection::NOROTATION) {
-            uint8_t volume = amplifier.getVolume();
-            if(direction == EncoderDirection::COUNTERCLOCKWISE && volume < PT2314_MAX_VOLUME) {
-                volume++;
-            } else if (direction == EncoderDirection::CLOCKWISE && volume > PT2314_MIN_VOLUME) {
-                volume--;
-            }
-
-            amplifier.setVolume(volume);
-            amplifier.update();
-
-
-            display.clear();
-
-            std::string text = "Volume: " + std::to_string(volume);
-            display.drawText(font_12x16, text.c_str(), 0, 0);
-
-            display.sendBuffer();
-
-
-            std::cout << "Volume: " << unsigned(volume) << std::endl;
-        }
+        menu.update();
     }
+}
+
+void gpio_callback(uint gpio, uint32_t events) {
+    Device* device;
+
+    switch(gpio) {
+        case ENCODER_PIN1:
+        case ENCODER_PIN2:
+        case ENCODER_BUTTON:
+            encoder.tick();
+            device = &encoder;
+            break;
+    }
+
+    menu.input(gpio, device);
 }

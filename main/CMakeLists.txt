@@ -8,7 +8,10 @@ message("= Root Directory: ${MAIN_ROOT_DIR}")
 message("=")
 
 set(MAIN_INCLUDES_DIR ${MAIN_ROOT_DIR}/include)
-file(GLOB MAIN_INCLUDES "${MAIN_INCLUDES_DIR}/*.h" "${MAIN_INCLUDES_DIR}/*.hpp" "${MAIN_INCLUDES_DIR}/fonts/*.h")
+file(GLOB MAIN_INCLUDES "${MAIN_INCLUDES_DIR}/*.h" "${MAIN_INCLUDES_DIR}/*.hpp"
+                        "${MAIN_INCLUDES_DIR}/fonts/*.h" "${MAIN_INCLUDES_DIR}/fonts/*.hpp"
+                        "${MAIN_INCLUDES_DIR}/menu/*.h" "${MAIN_INCLUDES_DIR}/menu/*.hpp"
+                        "${MAIN_INCLUDES_DIR}/scenes/*.h" "${MAIN_INCLUDES_DIR}/scenes/*.hpp")
 
 message("= Headers Directory: ${MAIN_INCLUDES_DIR}")
 message("= Header Files:")
@@ -20,7 +23,9 @@ message("=")
 
 # Source
 set(MAIN_SOURCE_DIR ${MAIN_ROOT_DIR}/src)
-file(GLOB MAIN_SOURCES "${MAIN_SOURCE_DIR}/.c" "${MAIN_SOURCE_DIR}/*.cpp")
+file(GLOB MAIN_SOURCES  "${MAIN_SOURCE_DIR}/.c" "${MAIN_SOURCE_DIR}/*.cpp"
+                        "${MAIN_SOURCE_DIR}/menu/.c" "${MAIN_SOURCE_DIR}/menu/*.cpp"
+                        "${MAIN_SOURCE_DIR}/scenes/.c" "${MAIN_SOURCE_DIR}/scenes/*.cpp")
 
 message("= Source Directory: ${MAIN_SOURCE_DIR}")
 message("= Source Files:")

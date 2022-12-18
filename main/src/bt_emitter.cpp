@@ -8,6 +8,7 @@
 
 BT_Emitter::BT_Emitter(uart_inst *uartInst, uint8_t rx, uint8_t tx, uint32_t baudRate)
     : rx(rx), tx(tx), baudRate(baudRate) {
+    instance = this;
     inst = uartInst;
 }
 
@@ -56,7 +57,12 @@ std::vector<BT_Device> BT_Emitter::search() {
         BT_Device device;
         for(std::string& s : split) {
             if(s.find("MacAdd") != std::string::npos) {
-                device.macAddress = s.substr(7);
+                std::string mac = s.substr(9);
+
+                if(mac.size() == 11)
+                    device.macAddress = "0x0" + mac;
+                else
+                    device.macAddress = "0x" + mac;
             }
 
             if(s.find("Name") != std::string::npos) {
@@ -72,14 +78,13 @@ std::vector<BT_Device> BT_Emitter::search() {
 
 
 bool BT_Emitter::connect(BT_Device& device) {
-    std::string macAddress = device.macAddress;
-    if(macAddress.size() != 14)
-        macAddress += '0';
+    disconnect();
 
+    std::string macAddress = device.macAddress;
     std::string command = KCX_CONNECTION_ADD_COMMAND + macAddress;
     std::vector<std::string> output = sendIrqCommand(command, 4000);
 
-    bool connected = false;
+    connected = false;
     for(uint8_t i = 1; i < output.size(); i++) {
         std::string line = output[i];
 
@@ -89,6 +94,7 @@ bool BT_Emitter::connect(BT_Device& device) {
         }
     }
 
+    _connectedDevice = device;
     return connected;
 }
 
@@ -102,9 +108,14 @@ bool BT_Emitter::disconnect() {
 
         if(line.find("DISCONNECT") != std::string::npos) {
             disconnected = true;
+
+            connected = false;
+            _connectedDevice = {};
+
             break;
         }
     }
+
 
     return disconnected;
 }
@@ -152,3 +163,4 @@ std::vector<std::string> BT_Emitter::sendIrqCommand(std::string &command, uint32
 
 std::vector<std::string> BT_Emitter::irqLines = {};
 uart_inst* BT_Emitter::inst = uart0;
+BT_Emitter* BT_Emitter::instance = nullptr;

@@ -9,8 +9,9 @@
 #include "hardware/sync.h"
 
 #include <cmath>
+#include <iostream>
 
-#define FLASH_MEMORY_POSITION (1024 * 1536)
+#define FLASH_MEMORY_POSITION (512 * 1024)
 
 namespace Memory
 {
@@ -40,10 +41,15 @@ namespace Memory
                 dataArray[i] = 0;
         }
 
+        for (int i = 0; i < pageSize; ++i) {
+            std::cout << unsigned(dataArray[i]) << ", ";
+        }
+        std::cout << std::endl << "Size: " << size << ", Sector Size: " << sectorSize << ", Page size: " << pageSize << std::endl;
+
         const uint32_t interrupts = save_and_disable_interrupts();
 
-        flash_range_erase(FLASH_MEMORY_POSITION, sectorSize);
-        flash_range_program(FLASH_MEMORY_POSITION, dataArray, pageSize);
+        flash_range_erase(FLASH_MEMORY_POSITION + offset, sectorSize);
+        flash_range_program(FLASH_MEMORY_POSITION + offset, dataArray, pageSize);
 
         restore_interrupts(interrupts);
     }
